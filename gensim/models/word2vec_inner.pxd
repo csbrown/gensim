@@ -50,12 +50,14 @@ cdef our_saxpy_ptr our_saxpy
 
 cdef struct Word2VecConfig:
     int hs, negative, sample, compute_loss, size, window, cbow_mean, workers
-    REAL_t running_training_loss, alpha
+    REAL_t running_training_loss
 
     REAL_t *syn0
     REAL_t *word_locks
     REAL_t *work
     REAL_t *neu1
+
+    np.float64_t alpha[MAX_SENTENCE_LEN]
 
     int codelens[MAX_SENTENCE_LEN]
     np.uint32_t indexes[MAX_SENTENCE_LEN]
