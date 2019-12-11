@@ -1056,8 +1056,8 @@ class BaseWordEmbeddingsModel(BaseAny2VecModel):
 
         """
 
-        self.alpha = start_alpha or self.alpha
-        self.min_alpha = end_alpha or self.min_alpha
+        self.alpha = start_alpha if start_alpha is not None else self.alpha
+        self.min_alpha = end_alpha if end_alpha is not None else self.min_alpha
         self.compute_loss = compute_loss
         self.running_training_loss = 0.0
         return super(BaseWordEmbeddingsModel, self).train(
