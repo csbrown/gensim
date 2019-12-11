@@ -1164,8 +1164,8 @@ class BaseWordEmbeddingsModel(BaseAny2VecModel):
             If the combination of input parameters is inconsistent.
 
         """
-        if self.alpha > self.min_alpha_yet_reached:
-            logger.warning("Effective 'alpha' higher than previous training cycles")
+        #if self.alpha > self.min_alpha_yet_reached:
+        #    logger.warning("Effective 'alpha' higher than previous training cycles")
         if self.model_trimmed_post_training:
             raise RuntimeError("Parameters for training were discarded using model_trimmed_post_training method")
 
