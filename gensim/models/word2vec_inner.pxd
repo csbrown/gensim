@@ -56,8 +56,7 @@ cdef struct Word2VecConfig:
     REAL_t *word_locks
     REAL_t *work
     REAL_t *neu1
-
-    REAL_t alpha[MAX_SENTENCE_LEN]
+    REAL_t *alpha
 
     int codelens[MAX_SENTENCE_LEN]
     np.uint32_t indexes[MAX_SENTENCE_LEN]
