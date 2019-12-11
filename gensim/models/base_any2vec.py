@@ -1105,7 +1105,7 @@ class BaseWordEmbeddingsModel(BaseAny2VecModel):
         end_alpha = self.min_alpha
         progress = (cur_epoch + epoch_progress) / self.epochs
         next_alpha = start_alpha - (start_alpha - end_alpha) * progress
-        next_alpha = max(end_alpha, next_alpha)
+        next_alpha = np.maximum(end_alpha, next_alpha)
         self.min_alpha_yet_reached = next_alpha
         return next_alpha
 
