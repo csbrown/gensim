@@ -74,7 +74,7 @@ cdef void our_saxpy_noblas(const int *N, const float *alpha, const float *X, con
 cdef void w2v_fast_sentence_sg_hs(
     const np.uint32_t *word_point, const np.uint8_t *word_code, const int codelen,
     REAL_t *syn0, REAL_t *syn1, const int size,
-    const np.uint32_t word2_index, const REAL_t *alpha, REAL_t *work, REAL_t *word_locks,
+    const np.uint32_t word2_index, const REAL_t alpha, REAL_t *work, REAL_t *word_locks,
     const int _compute_loss, REAL_t *_running_training_loss_param) nogil:
     """Train on a single effective word from the current batch, using the Skip-Gram model.
 
@@ -159,7 +159,7 @@ cdef inline unsigned long long random_int32(unsigned long long *next_random) nog
 cdef unsigned long long w2v_fast_sentence_sg_neg(
     const int negative, np.uint32_t *cum_table, unsigned long long cum_table_len,
     REAL_t *syn0, REAL_t *syn1neg, const int size, const np.uint32_t word_index,
-    const np.uint32_t word2_index, REAL_t *alpha, REAL_t *work,
+    const np.uint32_t word2_index, const REAL_t alpha, REAL_t *work,
     unsigned long long next_random, REAL_t *word_locks,
     const int _compute_loss, REAL_t *_running_training_loss_param) nogil:
     """Train on a single effective word from the current batch, using the Skip-Gram model.
@@ -250,7 +250,7 @@ cdef unsigned long long w2v_fast_sentence_sg_neg(
 cdef void w2v_fast_sentence_cbow_hs(
     const np.uint32_t *word_point, const np.uint8_t *word_code, int codelens[MAX_SENTENCE_LEN],
     REAL_t *neu1, REAL_t *syn0, REAL_t *syn1, const int size,
-    const np.uint32_t indexes[MAX_SENTENCE_LEN], REAL_t *alpha, REAL_t *work,
+    const np.uint32_t indexes[MAX_SENTENCE_LEN], const REAL_t alpha, REAL_t *work,
     int i, int j, int k, int cbow_mean, REAL_t *word_locks,
     const int _compute_loss, REAL_t *_running_training_loss_param) nogil:
     """Train on a single effective word from the current batch, using the CBOW method.
@@ -348,7 +348,7 @@ cdef void w2v_fast_sentence_cbow_hs(
 cdef unsigned long long w2v_fast_sentence_cbow_neg(
     const int negative, np.uint32_t *cum_table, unsigned long long cum_table_len, int codelens[MAX_SENTENCE_LEN],
     REAL_t *neu1,  REAL_t *syn0, REAL_t *syn1neg, const int size,
-    const np.uint32_t indexes[MAX_SENTENCE_LEN], REAL_t *alpha, REAL_t *work,
+    const np.uint32_t indexes[MAX_SENTENCE_LEN], const REAL_t alpha, REAL_t *work,
     int i, int j, int k, int cbow_mean, unsigned long long next_random, REAL_t *word_locks,
     const int _compute_loss, REAL_t *_running_training_loss_param) nogil:
     """Train on a single effective word from the current batch, using the CBOW method.
@@ -581,9 +581,9 @@ def train_batch_sg(model, sentences, alpha, _work, compute_loss):
                     if j == i:
                         continue
                     if c.hs:
-                        w2v_fast_sentence_sg_hs(c.points[i], c.codes[i], c.codelens[i], c.syn0, c.syn1, c.size, c.indexes[j], c.alpha, c.work, c.word_locks, c.compute_loss, &c.running_training_loss)
+                        w2v_fast_sentence_sg_hs(c.points[i], c.codes[i], c.codelens[i], c.syn0, c.syn1, c.size, c.indexes[j], c.alpha[sent_index], c.work, c.word_locks, c.compute_loss, &c.running_training_loss)
                     if c.negative:
-                        c.next_random = w2v_fast_sentence_sg_neg(c.negative, c.cum_table, c.cum_table_len, c.syn0, c.syn1neg, c.size, c.indexes[i], c.indexes[j], c.alpha, c.work, c.next_random, c.word_locks, c.compute_loss, &c.running_training_loss)
+                        c.next_random = w2v_fast_sentence_sg_neg(c.negative, c.cum_table, c.cum_table_len, c.syn0, c.syn1neg, c.size, c.indexes[i], c.indexes[j], c.alpha[sent_index], c.work, c.next_random, c.word_locks, c.compute_loss, &c.running_training_loss)
 
     model.running_training_loss = c.running_training_loss
     return effective_words
@@ -669,9 +669,9 @@ def train_batch_cbow(model, sentences, alpha, _work, _neu1, compute_loss):
                 if k > idx_end:
                     k = idx_end
                 if c.hs:
-                    w2v_fast_sentence_cbow_hs(c.points[i], c.codes[i], c.codelens, c.neu1, c.syn0, c.syn1, c.size, c.indexes, c.alpha, c.work, i, j, k, c.cbow_mean, c.word_locks, c.compute_loss, &c.running_training_loss)
+                    w2v_fast_sentence_cbow_hs(c.points[i], c.codes[i], c.codelens, c.neu1, c.syn0, c.syn1, c.size, c.indexes, c.alpha[sent_index], c.work, i, j, k, c.cbow_mean, c.word_locks, c.compute_loss, &c.running_training_loss)
                 if c.negative:
-                    c.next_random = w2v_fast_sentence_cbow_neg(c.negative, c.cum_table, c.cum_table_len, c.codelens, c.neu1, c.syn0, c.syn1neg, c.size, c.indexes, c.alpha, c.work, i, j, k, c.cbow_mean, c.next_random, c.word_locks, c.compute_loss, &c.running_training_loss)
+                    c.next_random = w2v_fast_sentence_cbow_neg(c.negative, c.cum_table, c.cum_table_len, c.codelens, c.neu1, c.syn0, c.syn1neg, c.size, c.indexes, c.alpha[sent_index], c.work, i, j, k, c.cbow_mean, c.next_random, c.word_locks, c.compute_loss, &c.running_training_loss)
 
     model.running_training_loss = c.running_training_loss
     return effective_words
