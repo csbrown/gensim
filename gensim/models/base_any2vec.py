@@ -728,7 +728,7 @@ class BaseWordEmbeddingsModel(BaseAny2VecModel):
         self.cbow_mean = int(cbow_mean)
         self.compute_loss = bool(compute_loss)
         self.running_training_loss = 0
-        self.min_alpha_yet_reached = float(alpha)
+        self.min_alpha_yet_reached = alpha
         self.corpus_count = 0
         self.corpus_total_words = 0
 
