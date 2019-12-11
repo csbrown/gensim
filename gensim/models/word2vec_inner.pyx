@@ -477,6 +477,7 @@ cdef init_w2v_config(Word2VecConfig *c, model, alpha, compute_loss, _work, _neu1
 
     c[0].syn0 = <REAL_t *>(np.PyArray_DATA(model.wv.vectors))
     c[0].word_locks = <REAL_t *>(np.PyArray_DATA(model.trainables.vectors_lockf))
+
     c[0].alpha = alpha
     c[0].size = model.wv.vector_size
 
