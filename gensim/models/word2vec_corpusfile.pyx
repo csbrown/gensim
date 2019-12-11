@@ -326,11 +326,11 @@ def train_epoch_sg(model, corpus_file, offset, _cython_vocab, _cur_epoch, _expec
                         if c.hs:
                             w2v_fast_sentence_sg_hs(
                                 c.points[i], c.codes[i], c.codelens[i], c.syn0, c.syn1, c.size, c.indexes[j],
-                                c.alpha, c.work, c.word_locks, c.compute_loss, &c.running_training_loss)
+                                c.alpha[sent_idx], c.work, c.word_locks, c.compute_loss, &c.running_training_loss)
                         if c.negative:
                             c.next_random = w2v_fast_sentence_sg_neg(
                                 c.negative, c.cum_table, c.cum_table_len, c.syn0, c.syn1neg, c.size,
-                                c.indexes[i], c.indexes[j], c.alpha, c.work, c.next_random, c.word_locks,
+                                c.indexes[i], c.indexes[j], c.alpha[sent_idx], c.work, c.next_random, c.word_locks,
                                 c.compute_loss, &c.running_training_loss)
 
             total_sentences += sentences.size()
@@ -420,13 +420,13 @@ def train_epoch_cbow(model, corpus_file, offset, _cython_vocab, _cur_epoch, _exp
                         k = idx_end
                     if c.hs:
                         w2v_fast_sentence_cbow_hs(
-                            c.points[i], c.codes[i], c.codelens, c.neu1, c.syn0, c.syn1, c.size, c.indexes, c.alpha,
+                            c.points[i], c.codes[i], c.codelens, c.neu1, c.syn0, c.syn1, c.size, c.indexes, c.alpha[sent_idx],
                             c.work, i, j, k, c.cbow_mean, c.word_locks, c.compute_loss, &c.running_training_loss)
 
                     if c.negative:
                         c.next_random = w2v_fast_sentence_cbow_neg(
                             c.negative, c.cum_table, c.cum_table_len, c.codelens, c.neu1, c.syn0,
-                            c.syn1neg, c.size, c.indexes, c.alpha, c.work, i, j, k, c.cbow_mean,
+                            c.syn1neg, c.size, c.indexes, c.alpha[sent_idx], c.work, i, j, k, c.cbow_mean,
                             c.next_random, c.word_locks, c.compute_loss, &c.running_training_loss)
 
             total_sentences += sentences.size()
