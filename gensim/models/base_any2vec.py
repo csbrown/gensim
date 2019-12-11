@@ -40,6 +40,7 @@ from six.moves import range
 from six import itervalues, string_types
 from gensim import matutils
 from numpy import float32 as REAL, ones, random, dtype
+import numpy as np
 from types import GeneratorType
 from gensim.utils import deprecated
 import os
