@@ -225,12 +225,12 @@ cdef void prepare_c_structures_for_batch(
         reduced_windows[i] = random_int32(next_random) % window
 
 
-cdef REAL_t get_alpha(REAL_t alpha, REAL_t end_alpha, int cur_epoch, int num_epochs) nogil:
+cdef REAL_t *get_alpha(REAL_t *alpha, REAL_t end_alpha, int cur_epoch, int num_epochs) nogil:
     return alpha - ((alpha - end_alpha) * (<REAL_t> cur_epoch) / num_epochs)
 
 
-cdef REAL_t get_next_alpha(
-        REAL_t start_alpha, REAL_t end_alpha, int total_examples, long long total_words,
+cdef REAL_t *get_next_alpha(
+        REAL_t *start_alpha, REAL_t end_alpha, int total_examples, long long total_words,
         int expected_examples, long long expected_words, int cur_epoch, int num_epochs) nogil:
     cdef REAL_t epoch_progress
 
@@ -243,7 +243,7 @@ cdef REAL_t get_next_alpha(
 
     cdef REAL_t progress = (cur_epoch + epoch_progress) / num_epochs
     cdef REAL_t next_alpha = start_alpha - (start_alpha - end_alpha) * progress
-    return max(end_alpha, next_alpha)
+    return np.maximum(end_alpha, next_alpha)
 
 
 def train_epoch_sg(model, corpus_file, offset, _cython_vocab, _cur_epoch, _expected_examples, _expected_words, _work,
